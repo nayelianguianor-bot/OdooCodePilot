@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pilot_registro,pilot.registro,model_pilot_registro,,1,1,1,1

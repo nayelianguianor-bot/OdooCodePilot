@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista lista -->
+    <record id="view_pilot_registro_list" model="ir.ui.view">
+        <field name="name">pilot.registro.list</field>
+        <field name="model">pilot.registro</field>
+        <field name="arch" type="xml">
+            <tree string="Registros">
+                <field name="name"/>
+                <field name="estado"/>
+                <field name="fecha"/>
+                <field name="activo"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista formulario -->
+    <record id="view_pilot_registro_form" model="ir.ui.view">
+        <field name="name">pilot.registro.form</field>
+        <field name="model">pilot.registro</field>
+        <field name="arch" type="xml">
+            <form string="Registro">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="estado"/>
+                        <field name="fecha"/>
+                        <field name="activo"/>
+                    </group>
+                    <group>
+                        <field name="descripcion"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_pilot_registro" model="ir.actions.act_window">
+        <field name="name">Registros</field>
+        <field name="res_model">pilot.registro</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_pilot_base_root"
+              name="OdooCodePilot"
+              sequence="100"/>
+
+    <menuitem id="menu_pilot_registros"
+              name="Registros"
+              parent="menu_pilot_base_root"
+              action="action_pilot_registro"
+              sequence="10"/>
+</odoo>
