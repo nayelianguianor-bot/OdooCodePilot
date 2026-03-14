@@ -10,6 +10,7 @@
                 <field name="estado"/>
                 <field name="fecha"/>
                 <field name="activo"/>
+                
             </tree>
         </field>
     </record>
