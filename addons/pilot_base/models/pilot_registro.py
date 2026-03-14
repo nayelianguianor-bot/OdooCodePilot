@@ -13,5 +13,3 @@ class PilotRegistro(models.Model):
     ], string='Estado', default='borrador')
     fecha = fields.Date(string='Fecha', default=fields.Date.today)
     activo = fields.Boolean(string='Activo', default=True)
-
-    Error de sintaxis
