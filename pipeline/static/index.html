@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OdooCodePilot</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a1d27;
+      border-bottom: 1px solid #2d3148;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #7c6af7;
+      letter-spacing: -0.5px;
+    }
+
+    header .logo span { color: #e2e8f0; }
+
+    header .badge {
+      background: #2d3148;
+      color: #7c6af7;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .top-bar h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .top-bar p {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #7c6af7;
+      color: white;
+    }
+
+    .btn-primary:hover { background: #6b59e6; }
+    .btn-primary:disabled { background: #3d3660; color: #6b59e6; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: #2d3148;
+      color: #94a3b8;
+    }
+
+    .btn-secondary:hover { background: #363b55; color: #e2e8f0; }
+
+    /* Summary cards */
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .card .value {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .card.total .value { color: #e2e8f0; }
+    .card.ok .value { color: #22c55e; }
+    .card.fail .value { color: #ef4444; }
+
+    /* Status bar */
+    .status-bar {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .status-bar .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot.idle { background: #64748b; }
+    .dot.running { background: #f59e0b; animation: pulse 1s infinite; }
+    .dot.success { background: #22c55e; }
+    .dot.error { background: #ef4444; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Module list */
+    .module-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .module-card {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .module-card.ok { border-left: 3px solid #22c55e; }
+    .module-card.fail { border-left: 3px solid #ef4444; }
+
+    .module-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .module-header:hover { background: #1e2235; }
+
+    .module-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .module-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .module-icon.ok { background: #14532d; }
+    .module-icon.fail { background: #450a0a; }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .tag.ok { background: #14532d; color: #22c55e; }
+    .tag.fail { background: #450a0a; color: #ef4444; }
+    .tag.count { background: #2d3148; color: #94a3b8; }
+
+    .module-body {
+      border-top: 1px solid #2d3148;
+      padding: 16px 20px;
+      display: none;
+    }
+
+    .module-body.open { display: block; }
+
+    .error-item {
+      background: #1c0a0a;
+      border: 1px solid #450a0a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #fca5a5;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .error-type {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ef4444;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 16px; margin-bottom: 8px; color: #94a3b8; }
+    .empty-state p { font-size: 14px; }
+
+    .chevron {
+      color: #64748b;
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .chevron.open { transform: rotate(90deg); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Odoo<span>CodePilot</span></div>
+  <div class="badge">v1.0</div>
+</header>
+
+<div class="container">
+  <div class="top-bar">
+    <div>
+      <h2>Panel de validación</h2>
+      <p>Valida tus módulos antes de hacer push</p>
+    </div>
+    <div class="actions">
+      <button class="btn-secondary" onclick="loadModules()">↺ Refrescar</button>
+      <button class="btn-primary" id="btnValidate" onclick="validateAll()">▶ Validar todo</button>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="card total">
+      <div class="label">Módulos</div>
+      <div class="value" id="totalCount">—</div>
+    </div>
+    <div class="card ok">
+      <div class="label">Sin errores</div>
+      <div class="value" id="okCount">—</div>
+    </div>
+    <div class="card fail">
+      <div class="label">Con errores</div>
+      <div class="value" id="failCount">—</div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar">
+    <div class="dot idle" id="statusDot"></div>
+    <span id="statusText">Listo para validar</span>
+  </div>
+
+  <!-- Module list -->
+  <div id="moduleList">
+    <div class="empty-state">
+      <div class="icon">🛡️</div>
+      <h3>OdooCodePilot</h3>
+      <p>Haz clic en "Validar todo" para analizar tus módulos</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = 'http://localhost:8888';
+
+  function setStatus(type, text) {
+    const dot = document.getElementById('statusDot');
+    dot.className = 'dot ' + type;
+    document.getElementById('statusText').textContent = text;
+  }
+
+  async function loadModules() {
+    try {
+      const res = await fetch(`${API}/api/modules`);
+      const data = await res.json();
+      document.getElementById('totalCount').textContent = data.modules.length;
+      setStatus('idle', `${data.modules.length} módulo(s) detectado(s) en ${data.addons_path}`);
+    } catch (e) {
+      setStatus('error', 'No se pudo conectar al servidor');
+    }
+  }
+
+  async function validateAll() {
+    const btn = document.getElementById('btnValidate');
+    btn.disabled = true;
+    setStatus('running', 'Validando módulos...');
+    document.getElementById('moduleList').innerHTML = '';
+
+    try {
+      const res = await fetch(`${API}/api/validate?modules=all`);
+      const data = await res.json();
+
+      if (data.error) {
+        setStatus('error', 'Error: ' + data.error);
+        return;
+      }
+
+      renderResults(data);
+
+    } catch (e) {
+      setStatus('error', 'Error de conexión con el servidor');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function renderResults(data) {
+    const { results, summary } = data;
+
+    document.getElementById('totalCount').textContent = summary.total;
+    document.getElementById('okCount').textContent = summary.ok;
+    document.getElementById('failCount').textContent = summary.failed;
+
+    if (summary.passed) {
+      setStatus('success', '✅ Todo limpio — listo para hacer push');
+    } else {
+      setStatus('error', `❌ ${summary.failed} módulo(s) con errores — corrige antes de hacer push`);
+    }
+
+    const list = document.getElementById('moduleList');
+    list.innerHTML = '';
+
+    // Primero los que tienen errores
+    const sorted = Object.entries(results).sort((a, b) => a[1].ok - b[1].ok);
+
+    for (const [module, result] of sorted) {
+      const card = document.createElement('div');
+      card.className = `module-card ${result.ok ? 'ok' : 'fail'}`;
+
+      const errorCount = result.errors.length;
+      const icon = result.ok ? '✓' : '✗';
+
+      card.innerHTML = `
+        <div class="module-header" onclick="toggleModule('${module}')">
+          <div class="module-name">
+            <div class="module-icon ${result.ok ? 'ok' : 'fail'}">${icon}</div>
+            ${module}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            ${!result.ok ? `<span class="tag count">${errorCount} error${errorCount > 1 ? 'es' : ''}</span>` : ''}
+            <span class="tag ${result.ok ? 'ok' : 'fail'}">${result.ok ? 'Limpio' : 'Falló'}</span>
+            <span class="chevron ${!result.ok ? 'open' : ''}" id="chevron-${module}">▶</span>
+          </div>
+        </div>
+        <div class="module-body ${!result.ok ? 'open' : ''}" id="body-${module}">
+          ${result.errors.map(e => renderError(e)).join('')}
+        </div>
+      `;
+
+      list.appendChild(card);
+    }
+  }
+
+  function renderError(error) {
+    let type = 'Error';
+    if (error.includes('sintaxis')) type = 'Sintaxis Python';
+    else if (error.includes('XML')) type = 'XML mal formado';
+    else if (error.includes('manifest')) type = 'Manifest';
+    else if (error.includes('__init__')) type = 'Estructura';
+    else if (error.includes('duplicado')) type = 'Duplicado';
+    else if (error.includes('campo')) type = 'Campo inválido';
+    else if (error.includes('vista') || error.includes('view')) type = 'Vista';
+
+    return `
+      <div class="error-item">
+        <div class="error-type">${type}</div>
+        ${error}
+      </div>
+    `;
+  }
+
+  function toggleModule(module) {
+    const body = document.getElementById(`body-${module}`);
+    const chevron = document.getElementById(`chevron-${module}`);
+    body.classList.toggle('open');
+    chevron.classList.toggle('open');
+  }
+
+  // Cargar módulos al iniciar
+  loadModules();
+</script>
+</body>
+</html>
