@@ -434,8 +434,8 @@
     chevron.classList.toggle('open');
   }
 
-  // Cargar módulos al iniciar
-  loadModules();
+// Cargar módulos y validar automáticamente al iniciar
+loadModules().then(() => validateAll());
 </script>
 </body>
 </html>
