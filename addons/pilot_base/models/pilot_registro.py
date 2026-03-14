@@ -14,4 +14,4 @@ class PilotRegistro(models.Model):
     fecha = fields.Date(string='Fecha', default=fields.Date.today)
     activo = fields.Boolean(string='Activo', default=True)
 
-    
+    esto es un error intencional
