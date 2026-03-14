@@ -1,0 +1,18 @@
+# Docker
+*.log
+*.pid
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+
+# Odoo
+*.pot
+filestore/
+
+# OS
+.DS_Store
+Thumbs.db
