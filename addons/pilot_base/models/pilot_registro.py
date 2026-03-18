@@ -10,6 +10,8 @@ class PilotRegistro(models.Model):
         ('borrador', 'Borrador'),
         ('activo', 'Activo'),
         ('cerrado', 'Cerrado'),
+        ('oculto', 'Oculto'),
+
     ], string='Estado', default='borrador')
     fecha = fields.Date(string='Fecha', default=fields.Date.today)
     activo = fields.Boolean(string='Activo', default=True)
