@@ -9,9 +9,10 @@ class PilotRegistro(models.Model):
     estado = fields.Selection([
         ('borrador', 'Borrador'),
         ('activo', 'Activo'),
-        ('cerrado', 'Cerrado'),
-        ('oculto', 'Oculto'),
+        ('cerrado', 'Cerrado')
 
     ], string='Estado', default='borrador')
     fecha = fields.Date(string='Fecha', default=fields.Date.today)
     activo = fields.Boolean(string='Activo', default=True)
+    fecha = fields.Date(string='Fecha', default=fields.Date.today)
+
